@@ -1,2 +1,523 @@
-# demo
-demo website
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="theme-color" content="#f5f4ee" />
+	<title>Bedford Market Place</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+	<style>
+		:root {
+			--paper: #f5f4ee;
+			--white: #fffefa;
+			--ink: #19251f;
+			--muted: #727a72;
+			--line: #dedfd5;
+			--green: #315c46;
+			--green-dark: #234432;
+			--orange: #ee7954;
+			--yellow: #f0c968;
+			--shadow: 0 14px 38px rgba(26, 42, 32, .09);
+		}
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
+		body { margin: 0; color: var(--ink); background: var(--paper); font: 15px/1.55 "DM Sans", sans-serif; }
+		body, button, input, select, textarea { font-family: "DM Sans", sans-serif; }
+		button, a { -webkit-tap-highlight-color: transparent; }
+		button { color: inherit; cursor: pointer; }
+		a { color: inherit; text-decoration: none; }
+		img { display: block; width: 100%; }
+		.shell { width: min(1220px, calc(100% - 64px)); margin-inline: auto; }
+		.announcement { background: var(--green); color: #fff; text-align: center; padding: 8px 16px; font-size: 12px; letter-spacing: .04em; }
+		.header { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 15; }
+		.nav { min-height: 76px; display: flex; align-items: center; gap: 34px; }
+		.brand { font: 800 24px/1 "Manrope", sans-serif; letter-spacing: -.7px; white-space: nowrap; }
+		.brand span { color: var(--orange); }
+		.nav-links { display: flex; gap: 26px; align-items: center; color: #505d53; font-size: 13px; font-weight: 600; }
+		.nav-links a:hover { color: var(--orange); }
+		.nav-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+		.icon-button, .user-button { border: 1px solid var(--line); background: transparent; min-height: 42px; padding: 0 13px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 13px; }
+		.user-button { background: var(--white); }
+		.cart-count { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: var(--orange); color: white; font-size: 11px; }
+		.button { border: 0; background: var(--green); color: white; min-height: 46px; padding: 0 19px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-weight: 700; font-size: 13px; transition: background .18s, transform .18s; }
+		.button:hover { background: var(--green-dark); transform: translateY(-1px); }
+		.button.coral { background: var(--orange); }
+		.button.coral:hover { background: #d76440; }
+		.button.outline { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+		.button.outline:hover { background: var(--white); }
+		.hero { padding: 30px 0 64px; }
+		.hero-frame { min-height: 470px; position: relative; overflow: hidden; background: #dfd8c8; display: grid; grid-template-columns: 1fr 1fr; }
+		.hero-copy { padding: 65px 7% 55px 9%; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+		.eyebrow { color: var(--green); font-size: 11px; text-transform: uppercase; letter-spacing: .15em; font-weight: 800; }
+		h1, h2, h3, p { margin-top: 0; }
+		h1 { font: 800 clamp(42px, 5vw, 66px)/1.02 "Manrope", sans-serif; letter-spacing: -2px; margin: 16px 0; max-width: 520px; }
+		.hero-copy p { color: #535d51; max-width: 405px; font-size: 15px; margin-bottom: 24px; }
+		.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+		.hero-media { min-height: 470px; position: relative; }
+		.hero-media img { height: 100%; position: absolute; inset: 0; object-fit: cover; object-position: center; }
+		.hero-note { position: absolute; right: 20px; bottom: 20px; background: var(--white); padding: 12px 16px; font-size: 11px; font-weight: 700; }
+		.trust-row { border-bottom: 1px solid var(--line); padding: 22px 0; display: flex; align-items: center; justify-content: space-between; gap: 18px; color: #515c51; font-size: 12px; font-weight: 600; }
+		.trust-item { display: flex; align-items: center; gap: 9px; }
+		.trust-dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; }
+		.section { padding: 66px 0 72px; }
+		.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 25px; }
+		.section-heading h2 { font: 800 32px/1.15 "Manrope", sans-serif; letter-spacing: -.8px; margin: 7px 0 4px; }
+		.section-heading p { color: var(--muted); margin: 0; font-size: 13px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 22px; }
+		.categories { display: flex; gap: 7px; overflow-x: auto; padding: 2px 0 5px; }
+		.category { flex: none; padding: 9px 14px; border: 1px solid var(--line); background: transparent; font-weight: 700; font-size: 12px; }
+		.category.active { background: var(--green); border-color: var(--green); color: white; }
+		.search { min-width: 220px; border: 1px solid var(--line); height: 40px; background: var(--white); display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+		.search input { border: 0; outline: 0; min-width: 0; width: 100%; background: transparent; font-size: 12px; }
+		.product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+		.product-card { background: var(--white); border: 1px solid var(--line); min-width: 0; transition: transform .2s, box-shadow .2s; }
+		.product-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+		.product-photo { height: 225px; position: relative; overflow: hidden; background: #e7e5dc; }
+		.product-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+		.product-card:hover .product-photo img { transform: scale(1.035); }
+		.product-label { position: absolute; top: 11px; left: 11px; padding: 5px 8px; background: var(--white); font-size: 10px; font-weight: 800; }
+		.product-info { padding: 14px; }
+		.seller { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
+		.product-info h3 { font: 700 15px/1.35 "Manrope", sans-serif; margin: 0 0 8px; min-height: 40px; }
+		.product-meta { min-height: 20px; display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 11px; margin-bottom: 13px; }
+		.stars { color: #bb8120; font-weight: 800; }
+		.product-buy { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+		.product-buy strong { font: 800 18px "Manrope", sans-serif; }
+		.add-button { border: 0; background: #e8eee8; color: var(--green-dark); height: 36px; padding: 0 11px; font-size: 11px; font-weight: 800; }
+		.add-button:hover { background: #d6e4d8; }
+		.empty-state { grid-column: 1 / -1; text-align: center; padding: 48px 20px; border: 1px dashed var(--line); color: var(--muted); }
+		.sell-band { background: var(--green); color: white; padding: 42px 0; }
+		.sell-inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+		.sell-inner h2 { font: 800 28px "Manrope", sans-serif; margin: 0 0 5px; }
+		.sell-inner p { color: #d7e1d9; margin: 0; font-size: 13px; }
+		.sell-inner .button { background: var(--yellow); color: var(--ink); flex: none; }
+		.community { padding-top: 64px; padding-bottom: 76px; }
+		.review-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+		.review-card { border-top: 2px solid var(--green); padding: 17px 0; }
+		.review-card blockquote { margin: 10px 0; font: 600 16px/1.45 "Manrope", sans-serif; }
+		.review-card p { margin: 0; color: var(--muted); font-size: 11px; }
+		.your-purchases { border-top: 1px solid var(--line); padding-top: 50px; }
+		.purchase-list { display: grid; gap: 12px; }
+		.purchase-row { background: var(--white); border: 1px solid var(--line); padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+		.purchase-row h3 { font: 700 14px "Manrope", sans-serif; margin: 0 0 3px; }
+		.purchase-row p { color: var(--muted); font-size: 11px; margin: 0; }
+		.purchase-actions { display: flex; align-items: center; gap: 12px; }
+		.purchase-actions strong { white-space: nowrap; }
+		.review-button { border: 1px solid var(--line); background: transparent; padding: 9px 12px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+		.review-button:hover { background: #edf1eb; }
+		.reviewed { color: var(--green); font-size: 12px; font-weight: 700; }
+		footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: 11px; }
+		.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+		.overlay { position: fixed; inset: 0; z-index: 30; background: rgba(16, 26, 20, .45); opacity: 0; pointer-events: none; transition: opacity .2s; }
+		.overlay.open { opacity: 1; pointer-events: auto; }
+		.drawer { position: fixed; z-index: 31; right: 0; top: 0; bottom: 0; width: min(430px, 100%); padding: 25px; background: var(--white); transform: translateX(102%); transition: transform .25s; display: flex; flex-direction: column; }
+		.drawer.open { transform: translateX(0); }
+		.drawer-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 15px; }
+		.drawer-head h2 { font: 800 22px "Manrope", sans-serif; margin: 0; }
+		.close-button { border: 0; background: transparent; font-size: 24px; width: 36px; height: 36px; }
+		.cart-lines { flex: 1; overflow: auto; }
+		.cart-line { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: center; }
+		.cart-line img { width: 64px; height: 64px; object-fit: cover; }
+		.cart-line h3 { font: 700 13px "Manrope", sans-serif; margin: 0 0 3px; }
+		.cart-line small { color: var(--muted); font-size: 11px; }
+		.quantity { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+		.quantity button { background: transparent; border: 1px solid var(--line); width: 23px; height: 23px; }
+		.remove-line { background: none; border: 0; color: #a34a34; font-size: 11px; }
+		.cart-total { border-top: 1px solid var(--line); padding-top: 16px; }
+		.total-row { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 12px; }
+		.cart-total .button { width: 100%; }
+		.modal-wrap { position: fixed; inset: 0; z-index: 40; background: rgba(16, 26, 20, .5); display: grid; place-items: center; padding: 16px; opacity: 0; pointer-events: none; transition: opacity .18s; }
+		.modal-wrap.open { opacity: 1; pointer-events: auto; }
+		.modal { width: min(490px, 100%); max-height: min(90vh, 780px); overflow: auto; background: var(--white); padding: 25px; box-shadow: var(--shadow); }
+		.modal-top { display: flex; justify-content: space-between; align-items: start; gap: 14px; margin-bottom: 19px; }
+		.modal-top h2 { font: 800 23px "Manrope", sans-serif; margin: 0 0 4px; }
+		.modal-top p { font-size: 12px; color: var(--muted); margin: 0; }
+		.form-grid { display: grid; gap: 13px; }
+		.form-grid.two { grid-template-columns: 1fr 1fr; }
+		.field { display: grid; gap: 5px; }
+		.field label { font-size: 11px; font-weight: 800; }
+		.field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); min-height: 42px; padding: 10px 11px; background: white; outline-color: var(--green); font-size: 13px; }
+		.field textarea { resize: vertical; min-height: 80px; }
+		.form-note { color: var(--muted); font-size: 10px; margin: 0; }
+		.modal .button { width: 100%; margin-top: 4px; }
+		.switch-auth { border: 0; background: none; color: var(--green); text-decoration: underline; padding: 4px; font: inherit; font-size: 12px; }
+		.stars-input { display: flex; gap: 6px; }
+		.stars-input button { background: none; border: 0; padding: 0; font-size: 26px; color: #d3d0c8; }
+		.stars-input button.selected { color: #bb8120; }
+		.toast { position: fixed; z-index: 60; left: 50%; bottom: 22px; transform: translate(-50%, 18px); opacity: 0; pointer-events: none; background: var(--ink); color: white; padding: 12px 18px; font-size: 12px; transition: .2s; }
+		.toast.show { opacity: 1; transform: translate(-50%, 0); }
+		@media (max-width: 900px) {
+			.shell { width: min(100% - 36px, 720px); }
+			.nav { gap: 18px; flex-wrap: wrap; padding: 15px 0; }
+			.nav-links { order: 3; width: 100%; justify-content: center; gap: 22px; }
+			.hero-frame { min-height: auto; grid-template-columns: 1fr 1fr; }
+			.hero-copy { padding: 42px 28px; }
+			.hero-media { min-height: 390px; }
+			.product-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+			.product-photo { height: 240px; }
+		}
+		@media (max-width: 600px) {
+			.shell { width: calc(100% - 28px); }
+			.announcement { font-size: 10px; }
+			.nav { gap: 9px; }
+			.brand { font-size: 21px; }
+			.nav-links { justify-content: flex-start; overflow-x: auto; gap: 20px; font-size: 12px; }
+			.nav-actions { gap: 6px; }
+			.icon-button, .user-button { padding: 0 10px; min-height: 38px; font-size: 11px; }
+			.hero { padding: 16px 0 34px; }
+			.hero-frame { grid-template-columns: 1fr; }
+			.hero-copy { padding: 34px 24px 28px; }
+			h1 { font-size: 42px; }
+			.hero-media { min-height: 250px; }
+			.trust-row { overflow-x: auto; justify-content: flex-start; }
+			.trust-item { flex: none; }
+			.section { padding: 46px 0 50px; }
+			.section-heading { align-items: flex-start; }
+			.section-heading h2 { font-size: 27px; }
+			.toolbar { align-items: stretch; flex-direction: column-reverse; }
+			.search { width: 100%; }
+			.product-grid { gap: 10px; }
+			.product-photo { height: 175px; }
+			.product-info { padding: 11px; }
+			.product-info h3 { font-size: 13px; min-height: 35px; }
+			.product-buy strong { font-size: 15px; }
+			.add-button { padding: 0 8px; font-size: 10px; }
+			.sell-inner { align-items: flex-start; flex-direction: column; }
+			.review-grid { grid-template-columns: 1fr; }
+			.purchase-row { align-items: flex-start; flex-direction: column; }
+			.purchase-actions { width: 100%; justify-content: space-between; }
+			.footer-inner { flex-direction: column; align-items: flex-start; }
+			.form-grid.two { grid-template-columns: 1fr; }
+		}
+	</style>
+</head>
+<body>
+	<div class="announcement">A little more good in every package <span aria-hidden="true">•</span> Free delivery on orders over $75</div>
+	<header class="header">
+		<div class="shell nav">
+			<a class="brand" href="#home" aria-label="Heyya Market home">heyya<span>.</span></a>
+			<nav class="nav-links" aria-label="Main navigation">
+				<a href="store.html">Shop all</a><a href="#community">Community</a><a href="#purchases">Your purchases</a>
+			</nav>
+			<div class="nav-actions">
+				<button class="user-button" id="accountButton" type="button">Sign in</button>
+				<button class="icon-button" id="cartToggle" type="button" aria-label="Open shopping bag">Bag <span class="cart-count" id="cartCount">0</span></button>
+			</div>
+		</div>
+	</header>
+	<main id="home">
+		<section class="hero shell">
+			<div class="hero-frame">
+				<div class="hero-copy">
+					<span class="eyebrow">A marketplace with good things</span>
+					<h1>Welcome</h1>
+					<p>Thoughtful finds from independent makers and good neighbors. Shop small, find something lovely, and share what you think.</p>
+					<div class="hero-actions"><a class="button" href="store.html">Open store <span aria-hidden="true">→</span></a><button class="button outline" id="heroSell" type="button">Open a shop</button></div>
+				</div>
+				<div class="hero-media"><img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=85" alt="A curated collection of handmade and vintage finds" /><div class="hero-note">Good finds. Real people.</div></div>
+			</div>
+			<div class="trust-row" aria-label="Marketplace highlights">
+				<div class="trust-item"><span class="trust-dot"></span>Independent sellers</div><div class="trust-item"><span class="trust-dot"></span>Buyer-loved goods</div><div class="trust-item"><span class="trust-dot"></span>Reviews from real purchases</div><div class="trust-item"><span class="trust-dot"></span>Small business, big heart</div>
+			</div>
+		</section>
+		<section class="section shell" id="shop">
+			<div class="section-heading"><div><span class="eyebrow">The good stuff</span><h2>Find your next favorite.</h2><p>One-of-a-kind pieces and everyday essentials, from independent sellers.</p></div><span id="resultCount" class="eyebrow"></span></div>
+			<div class="toolbar">
+				<div class="categories" id="categories" aria-label="Filter products by category"></div>
+				<label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Search the market" aria-label="Search products" /></label>
+			</div>
+			<div class="product-grid" id="productGrid" aria-live="polite"></div>
+		</section>
+		<section class="sell-band"><div class="shell sell-inner"><div><h2>Have something good to share?</h2><p>Set up a shop and put your product in front of the community.</p></div><button class="button" id="sellButton" type="button">Start selling <span aria-hidden="true">→</span></button></div></section>
+		<section class="section community shell" id="community">
+			<div class="section-heading"><div><span class="eyebrow">Good words, honestly earned</span><h2>From the community.</h2><p>Feedback shared by people who purchased from this market.</p></div></div>
+			<div class="review-grid" id="reviewGrid"></div>
+		</section>
+		<section class="section your-purchases shell" id="purchases">
+			<div class="section-heading"><div><span class="eyebrow">Your orders</span><h2>Purchases & feedback.</h2><p>Reviews are available for items you've ordered.</p></div></div>
+			<div class="purchase-list" id="purchaseList"></div>
+		</section>
+	</main>
+	<footer><div class="shell footer-inner"><a class="brand" href="#home">heyya<span>.</span></a><span>A friendly marketplace for things with a little more meaning.</span><span>Demo storefront · No real payments are processed</span></div></footer>
+
+	<div class="overlay" id="overlay"></div>
+	<aside class="drawer" id="cartDrawer" aria-label="Shopping bag" aria-hidden="true">
+		<div class="drawer-head"><h2>Your bag</h2><button class="close-button" id="closeCart" aria-label="Close shopping bag" type="button">×</button></div>
+		<div class="cart-lines" id="cartLines"></div>
+		<div class="cart-total"><div class="total-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div><p class="form-note">Delivery calculated at checkout. Demo checkout does not charge you.</p><button class="button" id="checkoutButton" type="button">Continue to checkout</button></div>
+	</aside>
+
+	<div class="modal-wrap" id="modalWrap" role="presentation"><section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"></section></div>
+	<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+	<script>
+		const seedProducts = [
+			{ id: 'p1', name: 'Hand-thrown morning mug', price: 32, category: 'Home', seller: 'Clay & Kind', rating: 4.9, reviews: 18, image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=900&q=80', description: 'A one-of-a-kind stoneware mug, made slowly by hand.' },
+			{ id: 'p2', name: 'Everyday market tote', price: 28, category: 'Accessories', seller: 'Field Notes Studio', rating: 4.8, reviews: 24, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFxmyo3_YWaque9Fiqh-0wefaz9ndQLA2bVkfNAQJtyg&s=10', description: 'A sturdy, easy-carry tote for errands and little adventures.' },
+			{ id: 'p3', name: 'Sunday linen shirt', price: 64, category: 'Clothing', seller: 'Morrow Made', rating: 4.9, reviews: 11, image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=80', description: 'Relaxed-fit linen with a soft hand and a lived-in feel.' },
+			{ id: 'p4', name: 'Wildflower candle', price: 24, category: 'Home', seller: 'Good Light Co.', rating: 4.7, reviews: 31, image: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=900&q=80', description: 'A small-batch soy candle with a bright, herbal scent.' },
+			{ id: 'p5', name: 'Pocket sketchbook set', price: 18, category: 'Art', seller: 'Paper Habit', rating: 5.0, reviews: 9, image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80', description: 'Three recycled-paper notebooks, ready for your next idea.' },
+			{ id: 'p6', name: 'Weekend woven basket', price: 46, category: 'Home', seller: 'Gather & Weave', rating: 4.8, reviews: 15, image: 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?auto=format&fit=crop&w=900&q=80', description: 'Handwoven natural fiber basket for everyday storage.' },
+			{ id: 'p7', name: 'Colorblock ceramic earrings', price: 36, category: 'Accessories', seller: 'Small Sun Studio', rating: 4.9, reviews: 7, image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=900&q=80', description: 'Lightweight, hand-shaped earrings with a joyful pop of color.' },
+			{ id: 'p8', name: 'Botanical print no. 04', price: 42, category: 'Art', seller: 'June & Ink', rating: 4.8, reviews: 13, image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=900&q=80', description: 'An archival botanical art print on textured matte paper.' },
+			{ id: 'p9', name: 'iPhone Air', price: 1099, category: 'Phones', seller: 'Apple', rating: 5, reviews: 0, image: 'https://www.apple.com/v/iphone-air/i/images/overview/welcome/hero_endframe__fjhlsvwr03ma_medium.jpg', description: 'iPhone Air in Sky Blue, shown from the side.' }
+		];
+		const starterReviews = [
+			{ name: 'Nina R.', product: 'Hand-thrown morning mug', rating: 5, text: 'The shape feels lovely in your hands. It arrived carefully packed and has become my first-coffee favorite.' },
+			{ name: 'Marcus T.', product: 'Everyday market tote', rating: 5, text: 'Roomier than I expected and really well made. I have already taken it everywhere.' },
+			{ name: 'Leah W.', product: 'Sunday linen shirt', rating: 5, text: 'A beautiful piece and a kind seller. The fabric gets softer every time I wear it.' }
+		];
+		const storeKey = 'goodfolk-market-v1';
+		const freshState = () => ({ products: seedProducts, cart: [], user: null, orders: [], reviews: starterReviews });
+		let state;
+		try {
+			const saved = JSON.parse(localStorage.getItem(storeKey));
+			state = saved && typeof saved === 'object' ? { ...freshState(), ...saved } : freshState();
+		} catch { state = freshState(); }
+		const storedProducts = Array.isArray(state.products) ? state.products : [];
+		state.products = [
+			...seedProducts.map((product) => {
+				const savedProduct = storedProducts.find((item) => item.id === product.id);
+				return savedProduct ? { ...product, ...savedProduct, image: product.image } : product;
+			}),
+			...storedProducts.filter((savedProduct) => !seedProducts.some((product) => product.id === savedProduct.id))
+		];
+		let activeCategory = 'All';
+		let authMode = 'signin';
+		let reviewTarget = null;
+		let reviewRating = 5;
+		let toastTimer;
+
+		const $ = (selector) => document.querySelector(selector);
+		const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+		const money = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(amount) || 0);
+		const persist = () => localStorage.setItem(storeKey, JSON.stringify(state));
+		const safeImage = (url) => /^https?:\/\//i.test(String(url || '')) ? String(url) : 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=80';
+		const stars = (rating) => '★'.repeat(Math.max(0, Math.min(5, Math.round(Number(rating) || 0)))) + '☆'.repeat(5 - Math.max(0, Math.min(5, Math.round(Number(rating) || 0))));
+
+		function showToast(message) {
+			const toast = $('#toast');
+			toast.textContent = message;
+			toast.classList.add('show');
+			clearTimeout(toastTimer);
+			toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+		}
+
+		function renderCategories() {
+			const categories = ['All', ...new Set(state.products.map((product) => product.category))];
+			$('#categories').innerHTML = categories.map((category) => `<button class="category ${activeCategory === category ? 'active' : ''}" data-category="${escapeHtml(category)}" type="button">${escapeHtml(category)}</button>`).join('');
+		}
+
+		function renderProducts() {
+			const search = $('#searchInput').value.trim().toLowerCase();
+			const products = state.products.filter((product) => (activeCategory === 'All' || product.category === activeCategory) && `${product.name} ${product.seller} ${product.category}`.toLowerCase().includes(search));
+			$('#resultCount').textContent = `${products.length} ${products.length === 1 ? 'good find' : 'good finds'}`;
+			$('#productGrid').innerHTML = products.length ? products.map((product) => `
+				<article class="product-card">
+					<div class="product-photo"><img src="${escapeHtml(safeImage(product.image))}" alt="${escapeHtml(product.name)}" loading="lazy" /><span class="product-label">${escapeHtml(product.category)}</span></div>
+					<div class="product-info"><div class="seller">By ${escapeHtml(product.seller)}</div><h3>${escapeHtml(product.name)}</h3>
+						<div class="product-meta"><span class="stars" aria-label="${Number(product.rating) || 0} out of 5 stars">${stars(product.rating)}</span><span>${Number(product.reviews) || 0} reviews</span></div>
+						<div class="product-buy"><strong>${money(product.price)}</strong><button class="add-button" data-add="${escapeHtml(product.id)}" type="button">Add to bag +</button></div>
+					</div>
+				</article>`).join('') : '<div class="empty-state">No finds here just yet. Try a different search or category.</div>';
+		}
+
+		function renderCart() {
+			const count = state.cart.reduce((total, item) => total + item.quantity, 0);
+			$('#cartCount').textContent = count;
+			const lines = state.cart.map((item) => {
+				const product = state.products.find((entry) => entry.id === item.id);
+				return product ? `<div class="cart-line"><img src="${escapeHtml(safeImage(product.image))}" alt="" /><div><h3>${escapeHtml(product.name)}</h3><small>${money(product.price)} each</small><div class="quantity"><button type="button" data-quantity="${escapeHtml(product.id)}" data-step="-1" aria-label="Remove one">−</button><span>${item.quantity}</span><button type="button" data-quantity="${escapeHtml(product.id)}" data-step="1" aria-label="Add one">+</button></div></div><button class="remove-line" type="button" data-remove="${escapeHtml(product.id)}">Remove</button></div>` : '';
+			}).join('');
+			$('#cartLines').innerHTML = lines || '<p class="empty-state">Your bag is waiting for something good.</p>';
+			const subtotal = state.cart.reduce((total, item) => total + (state.products.find((product) => product.id === item.id)?.price || 0) * item.quantity, 0);
+			$('#cartSubtotal').textContent = money(subtotal);
+			$('#checkoutButton').disabled = !state.cart.length;
+			$('#checkoutButton').style.opacity = state.cart.length ? '1' : '.55';
+		}
+
+		function renderAccount() {
+			const button = $('#accountButton');
+			button.textContent = state.user ? `Hi, ${state.user.name.split(' ')[0]}` : 'Sign in';
+			button.title = state.user ? 'Click to sign out' : 'Sign in or create an account';
+		}
+
+		function renderReviews() {
+			const reviews = [...state.reviews].slice(-6).reverse();
+			$('#reviewGrid').innerHTML = reviews.length ? reviews.map((review) => `<article class="review-card"><span class="stars">${stars(review.rating)}</span><blockquote>“${escapeHtml(review.text)}”</blockquote><p>${escapeHtml(review.name)} · purchased ${escapeHtml(review.product)}</p></article>`).join('') : '<div class="empty-state">Your community reviews will show up here.</div>';
+		}
+
+		function renderPurchases() {
+			const orders = state.user ? state.orders.filter((order) => order.email === state.user.email) : [];
+			const rows = orders.flatMap((order) => order.items.map((item) => `<div class="purchase-row"><div><h3>${escapeHtml(item.name)}</h3><p>Order ${escapeHtml(order.id)} · ${escapeHtml(order.date)}</p></div><div class="purchase-actions"><strong>${money(item.price)}</strong>${item.reviewed ? '<span class="reviewed">Feedback shared ✓</span>' : `<button class="review-button" type="button" data-review="${escapeHtml(order.id)}" data-product="${escapeHtml(item.id)}">Leave feedback</button>`}</div></div>`));
+			$('#purchaseList').innerHTML = rows.length ? rows.join('') : `<div class="empty-state">${state.user ? 'Your purchases will appear here after checkout.' : 'Sign in to see your purchases and leave feedback on items you have bought.'}</div>`;
+		}
+
+		function renderAll() {
+			renderCategories(); renderProducts(); renderCart(); renderAccount(); renderReviews(); renderPurchases();
+		}
+
+		function openCart() {
+			$('#overlay').classList.add('open'); $('#cartDrawer').classList.add('open'); $('#cartDrawer').setAttribute('aria-hidden', 'false');
+		}
+		function closeCart() {
+			$('#overlay').classList.remove('open'); $('#cartDrawer').classList.remove('open'); $('#cartDrawer').setAttribute('aria-hidden', 'true');
+		}
+		function openModal(content) {
+			$('#modal').innerHTML = content;
+			$('#modalWrap').classList.add('open');
+			$('#modal').querySelector('input, select, textarea, button')?.focus();
+		}
+		function closeModal() { $('#modalWrap').classList.remove('open'); }
+
+		function openAuth(mode = 'signin', next = '') {
+			authMode = mode;
+			const isSignup = authMode === 'signup';
+			openModal(`<div class="modal-top"><div><span class="eyebrow">Welcome to heyya</span><h2 id="modalTitle">${isSignup ? 'Make yourself at home.' : 'Good to see you again.'}</h2><p>${isSignup ? 'Create an account to shop, share, or open a shop.' : 'Sign in to shop and manage your listings.'}</p></div><button class="close-button" type="button" data-close aria-label="Close">×</button></div>
+				<form class="form-grid" id="authForm" data-next="${escapeHtml(next)}">
+					${isSignup ? '<div class="field"><label for="authName">Your name</label><input id="authName" name="name" autocomplete="name" required maxlength="60" /></div>' : ''}
+					<div class="field"><label for="authEmail">Email address</label><input id="authEmail" name="email" type="email" autocomplete="email" required /></div>
+					<div class="field"><label for="authPassword">Password</label><input id="authPassword" name="password" type="password" autocomplete="${isSignup ? 'new-password' : 'current-password'}" minlength="6" required /></div>
+					<p class="form-note">Demo sign-in only: your password is not saved and no real account is created.</p>
+					<button class="button" type="submit">${isSignup ? 'Create account' : 'Sign in'}</button>
+					<button class="switch-auth" type="button" data-auth-mode="${isSignup ? 'signin' : 'signup'}">${isSignup ? 'Already have an account? Sign in' : 'New to heyya? Create an account'}</button>
+				</form>`);
+		}
+
+		function beginSell() {
+			if (!state.user) { openAuth('signup', 'sell'); return; }
+			openSellForm();
+		}
+
+		function openSellForm() {
+			openModal(`<div class="modal-top"><div><span class="eyebrow">Your little shop</span><h2 id="modalTitle">List something lovely.</h2><p>Share the details and your listing will appear in the market.</p></div><button class="close-button" type="button" data-close aria-label="Close">×</button></div>
+				<form class="form-grid" id="sellForm">
+					<div class="field"><label for="listingName">Product name</label><input id="listingName" name="name" required maxlength="80" placeholder="e.g. Hand-painted ceramic bowl" /></div>
+					<div class="form-grid two"><div class="field"><label for="listingPrice">Price (USD)</label><input id="listingPrice" name="price" type="number" min="0.5" max="100000" step="0.01" required placeholder="24.00" /></div><div class="field"><label for="listingCategory">Category</label><select id="listingCategory" name="category"><option>Home</option><option>Clothing</option><option>Accessories</option><option>Art</option><option>Food</option><option>Other</option></select></div></div>
+					<div class="field"><label for="listingImage">Product photo URL</label><input id="listingImage" name="image" type="url" placeholder="https://…" /></div>
+					<div class="field"><label for="listingDescription">A few details</label><textarea id="listingDescription" name="description" maxlength="300" placeholder="What makes it special?"></textarea></div>
+					<p class="form-note">Listings are stored in this browser for the demo. A live marketplace needs a secure server.</p>
+					<button class="button" type="submit">Publish listing</button>
+				</form>`);
+		}
+
+		function openCheckout() {
+			if (!state.user) { closeCart(); openAuth('signin', 'checkout'); return; }
+			if (!state.cart.length) return;
+			openModal(`<div class="modal-top"><div><span class="eyebrow">Nearly yours</span><h2 id="modalTitle">Delivery details.</h2><p>Confirm your demo order. No payment will be collected.</p></div><button class="close-button" type="button" data-close aria-label="Close">×</button></div>
+				<form class="form-grid" id="checkoutForm">
+					<div class="field"><label for="shipName">Full name</label><input id="shipName" name="name" autocomplete="name" value="${escapeHtml(state.user.name)}" required /></div>
+					<div class="field"><label for="shipEmail">Email address</label><input id="shipEmail" name="email" type="email" autocomplete="email" value="${escapeHtml(state.user.email)}" required /></div>
+					<div class="field"><label for="shipAddress">Delivery address</label><input id="shipAddress" name="address" autocomplete="street-address" required placeholder="Street and number" /></div>
+					<div class="form-grid two"><div class="field"><label for="shipCity">City</label><input id="shipCity" name="city" autocomplete="address-level2" required /></div><div class="field"><label for="shipZip">Postcode</label><input id="shipZip" name="zip" autocomplete="postal-code" required /></div></div>
+					<p class="form-note">Your order is a local demo record; checkout does not process payments or ship goods.</p>
+					<button class="button" type="submit">Place demo order · ${money(state.cart.reduce((sum, item) => sum + (state.products.find((p) => p.id === item.id)?.price || 0) * item.quantity, 0))}</button>
+				</form>`);
+		}
+
+		function openReview(orderId, productId) {
+			reviewTarget = { orderId, productId };
+			reviewRating = 5;
+			const order = state.orders.find((item) => item.id === orderId);
+			const product = order?.items.find((item) => item.id === productId);
+			if (!product) return;
+			openModal(`<div class="modal-top"><div><span class="eyebrow">Purchased by you</span><h2 id="modalTitle">How was ${escapeHtml(product.name)}?</h2><p>Your feedback helps shoppers and independent sellers.</p></div><button class="close-button" type="button" data-close aria-label="Close">×</button></div>
+				<form class="form-grid" id="reviewForm"><div class="field"><label>Your rating</label><div class="stars-input" role="group" aria-label="Choose a rating">${[1,2,3,4,5].map((value) => `<button type="button" class="${value <= reviewRating ? 'selected' : ''}" data-rating="${value}" aria-label="${value} stars">★</button>`).join('')}</div></div>
+				<div class="field"><label for="reviewText">Your feedback</label><textarea id="reviewText" name="text" required maxlength="500" placeholder="What should other shoppers know?"></textarea></div>
+				<p class="form-note">Only a buyer with a recorded purchase can leave feedback for this item.</p><button class="button" type="submit">Share feedback</button></form>`);
+		}
+
+		$('#categories').addEventListener('click', (event) => {
+			const button = event.target.closest('[data-category]');
+			if (!button) return;
+			activeCategory = button.dataset.category;
+			renderCategories(); renderProducts();
+		});
+		$('#searchInput').addEventListener('input', renderProducts);
+		$('#productGrid').addEventListener('click', (event) => {
+			const button = event.target.closest('[data-add]');
+			if (!button) return;
+			const item = state.cart.find((entry) => entry.id === button.dataset.add);
+			if (item) item.quantity += 1; else state.cart.push({ id: button.dataset.add, quantity: 1 });
+			persist(); renderCart(); showToast('Added to your bag.');
+		});
+		$('#cartToggle').addEventListener('click', openCart);
+		$('#closeCart').addEventListener('click', closeCart);
+		$('#overlay').addEventListener('click', closeCart);
+		$('#cartLines').addEventListener('click', (event) => {
+			const quantityButton = event.target.closest('[data-quantity]');
+			const removeButton = event.target.closest('[data-remove]');
+			const productId = quantityButton?.dataset.quantity || removeButton?.dataset.remove;
+			if (!productId) return;
+			const item = state.cart.find((entry) => entry.id === productId);
+			if (removeButton) state.cart = state.cart.filter((entry) => entry.id !== productId);
+			else if (item) { item.quantity += Number(quantityButton.dataset.step); if (item.quantity <= 0) state.cart = state.cart.filter((entry) => entry.id !== productId); }
+			persist(); renderCart();
+		});
+		$('#checkoutButton').addEventListener('click', openCheckout);
+		$('#sellButton').addEventListener('click', beginSell);
+		$('#heroSell').addEventListener('click', beginSell);
+		$('#accountButton').addEventListener('click', () => {
+			if (!state.user) openAuth('signin');
+			else if (confirm(`Sign out ${state.user.name}?`)) { state.user = null; persist(); renderAll(); showToast('You are signed out.'); }
+		});
+		$('#purchaseList').addEventListener('click', (event) => {
+			const button = event.target.closest('[data-review]');
+			if (button) openReview(button.dataset.review, button.dataset.product);
+		});
+		$('#modalWrap').addEventListener('click', (event) => {
+			if (event.target === $('#modalWrap') || event.target.closest('[data-close]')) closeModal();
+			const modeButton = event.target.closest('[data-auth-mode]');
+			if (modeButton) openAuth(modeButton.dataset.authMode, $('#authForm').dataset.next);
+			const ratingButton = event.target.closest('[data-rating]');
+			if (ratingButton) {
+				reviewRating = Number(ratingButton.dataset.rating);
+				document.querySelectorAll('[data-rating]').forEach((button) => button.classList.toggle('selected', Number(button.dataset.rating) <= reviewRating));
+			}
+		});
+		$('#modal').addEventListener('submit', (event) => {
+			event.preventDefault();
+			const form = event.target;
+			const values = Object.fromEntries(new FormData(form));
+			if (form.id === 'authForm') {
+				const name = String(values.name || values.email.split('@')[0]).trim();
+				state.user = { name, email: String(values.email).trim().toLowerCase() };
+				const next = form.dataset.next;
+				persist(); closeModal(); renderAll(); showToast(`Welcome, ${name.split(' ')[0]}.`);
+				if (next === 'sell') openSellForm();
+				if (next === 'checkout') openCheckout();
+			}
+			if (form.id === 'sellForm') {
+				const product = { id: `user-${Date.now()}`, name: String(values.name).trim(), price: Number(values.price), category: String(values.category), seller: state.user.name, rating: 0, reviews: 0, image: safeImage(values.image), description: String(values.description || '').trim() };
+				state.products.unshift(product); persist(); closeModal(); activeCategory = 'All'; renderAll(); $('#shop').scrollIntoView({ behavior: 'smooth' }); showToast('Your listing is live in this demo.');
+			}
+			if (form.id === 'checkoutForm') {
+				const orderId = `GF-${Date.now().toString().slice(-7)}`;
+				const items = state.cart.map((entry) => { const product = state.products.find((item) => item.id === entry.id); return product ? { id: product.id, name: product.name, price: product.price, quantity: entry.quantity, reviewed: false } : null; }).filter(Boolean);
+				state.orders.unshift({ id: orderId, email: String(values.email).trim().toLowerCase(), date: new Date().toLocaleDateString(), items });
+				state.user = { name: String(values.name).trim(), email: String(values.email).trim().toLowerCase() };
+				state.cart = []; persist(); closeModal(); closeCart(); renderAll(); $('#purchases').scrollIntoView({ behavior: 'smooth' }); showToast('Order recorded. Your feedback is welcome below.');
+			}
+			if (form.id === 'reviewForm' && reviewTarget) {
+				const order = state.orders.find((item) => item.id === reviewTarget.orderId);
+				const purchasedItem = order?.items.find((item) => item.id === reviewTarget.productId);
+				if (!order || !purchasedItem || purchasedItem.reviewed) { closeModal(); return; }
+				purchasedItem.reviewed = true;
+				state.reviews.push({ name: state.user?.name || 'Customer', product: purchasedItem.name, rating: reviewRating, text: String(values.text).trim() });
+				const product = state.products.find((item) => item.id === purchasedItem.id);
+				if (product) { const oldCount = Number(product.reviews) || 0; product.rating = Number((((Number(product.rating) || 0) * oldCount + reviewRating) / (oldCount + 1)).toFixed(1)); product.reviews = oldCount + 1; }
+				persist(); closeModal(); renderAll(); showToast('Thanks for sharing your feedback.');
+			}
+		});
+		document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeModal(); closeCart(); } });
+		renderAll();
+		const pageAction = new URLSearchParams(window.location.search);
+		if (pageAction.get('checkout') === '1' && state.cart.length) openCheckout();
+		if (pageAction.get('account') === '1') openAuth('signin');
+		if (pageAction.get('sell') === '1') beginSell();
+	</script>
+</body>
+</html>
+
